@@ -1,0 +1,3 @@
+[submodule "signifier-java"]
+	path = signifier-java
+	url = git@github.com:Interactions-HSG/signifier-java.git
