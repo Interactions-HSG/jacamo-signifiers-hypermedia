@@ -1,0 +1,3 @@
+mas factory {
+agent conveying_agent : factory/conveying_agent.asl
+}

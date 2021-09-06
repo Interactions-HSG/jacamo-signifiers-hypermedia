@@ -1,4 +1,3 @@
 mas maze1 {
-agent agent_maze: example1/agent_maze.asl
-
+agent agent_maze: maze1/agent_maze.asl
 }

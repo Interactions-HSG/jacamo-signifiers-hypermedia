@@ -1,0 +1,5 @@
+mas maze5 {
+agent first_agent_maze: maze5/first_agent_maze.asl
+
+agent second_agent_maze: maze5/second_agent_maze.asl
+}

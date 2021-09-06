@@ -1,0 +1,3 @@
+mas maze6 {
+agent agent_maze: maze6/agent_maze.asl
+}
