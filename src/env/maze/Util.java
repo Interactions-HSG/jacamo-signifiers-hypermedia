@@ -1,9 +1,14 @@
 package maze;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.model.util.Models;
+import org.eclipse.rdf4j.model.vocabulary.RDF;
+import org.hyperagents.hypermedia.HypermediaOntology;
+import org.hyperagents.util.Plan;
+import org.hyperagents.util.RDFS;
+import org.hyperagents.util.State;
+
+import java.util.*;
 
 public class Util {
 
@@ -111,6 +116,50 @@ public class Util {
         return newRoom;
 
 
+    }
+
+    public static boolean hasPrecondition(State precondition, int room){
+        boolean b = false;
+        Value v = precondition.getStatementList().get(0).getObject();
+        System.out.println("value: "+v);
+        List<IRI> rooms = getRooms();
+        String vString = v.toString();
+        System.out.println("vString: "+vString);
+        String roomString = rooms.get(room-1).toString();
+        System.out.println("roomString: "+roomString);
+        if (vString.equals(roomString)){
+            System.out.println("vString equals roomString");
+            b = true;
+        }
+        return b;
+    }
+
+    public static List<IRI> getRooms(){
+        List<IRI> rooms = new ArrayList<>();
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room1));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room2));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room3));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room4));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room5));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room6));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room7));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room8));
+        rooms.add(RDFS.rdf.createIRI(MazeOntology.room9));
+        return rooms;
+
+    }
+
+    public static boolean isHypermediaPlan(Plan p){
+        boolean b = false;
+        Model m = p.getModel();
+        Set<Resource> types = Models.objectResources(m.filter(p.getId(), RDF.TYPE, null));
+        for (Resource type : types){
+            if (type.equals(HypermediaOntology.HypermediaPlan)){
+                System.out.println("is hypermedia plan");
+                b = true;
+            }
+        }
+        return b;
     }
 
 }

@@ -1,4 +1,4 @@
-maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze5").
+maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze").
 
 
 +!start : maze_url(Url) <- .print("Start maze");

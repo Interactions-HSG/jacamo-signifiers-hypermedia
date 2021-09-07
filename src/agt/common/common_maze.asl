@@ -19,7 +19,11 @@ cartago.invoke_obj("util.FeedbackUtil", getStringAsInt(RoomString), Room);
 +?get_current_location2(Url, HTTPArtifact, Room) : true <-
 retrieveCurrentLocation(Url, Room)[artifact_id(HTTPArtifact)].
 
-+!move(Url, HTTPArtifact, M): true <-
+
++!move(Maze, M): true <-
+invokeAction("http://example.org/move", [M,0])[artifact_id(Maze)].
+
++!move2(Url, HTTPArtifact, M): true <-
 //invokeAction("http://example.org/move", [M,0])[artifact_id(Maze)].
 move(Url, M)[artifact_id(HTTPArtifact)].
 

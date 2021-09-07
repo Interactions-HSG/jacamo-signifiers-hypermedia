@@ -8,6 +8,7 @@ import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 import org.hyperagents.affordance.Affordance;
 import org.hyperagents.hypermedia.HypermediaPlan;
+import org.hyperagents.signifier.Signifier;
 import org.hyperagents.util.Plan;
 import org.hyperagents.util.SequencePlan;
 
@@ -25,7 +26,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
     public void init(String url){
         rdf = SimpleValueFactory.getInstance();
         this.url = url;
-        Resource exitId = rdf.createBNode("exit");
+        Resource exitId = rdf.createBNode("exitAffordance");
         affordanceBuilder = new Affordance.Builder(exitId);
         Resource planId = rdf.createBNode("exitPlan");
         planBuilder = new SequencePlan.Builder(planId);
@@ -36,6 +37,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
     public void addMovement(int room1, int movement, int room2){
         Affordance a = createMovement(room1, movement, room2);
         sequence.add(a);
+        System.out.println("movement from "+room1+"to "+room2+" added");
 
     }
 
@@ -56,6 +58,21 @@ public class HypermediaExitBuilderArtifact extends Artifact {
         affordanceBuilder.addPlan(plan);
         Affordance affordance = affordanceBuilder.build();
         param.set(affordance);
+    }
+
+    @OPERATION
+    public void getSignifier(OpFeedbackParam<Signifier> param){
+        planBuilder.addSequence(sequence);
+        Plan plan = planBuilder.build();
+        affordanceBuilder.addPlan(plan);
+        Affordance affordance = affordanceBuilder.build();
+        Resource signifierId = rdf.createBNode("exit");
+        Signifier signifier = new Signifier.Builder(signifierId)
+                .addAffordance(affordance)
+                .build();
+        System.out.println("signifier created");
+        System.out.println(signifier);
+        param.set(signifier);
     }
 
     private Affordance createMovement(int room1, int movement, int room2){

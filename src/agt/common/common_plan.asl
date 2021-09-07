@@ -6,7 +6,7 @@ cartago.invoke_obj("org.hyperagents.hypermedia.HypermediaPlan", getAsHypermediaP
 useHypermediaPlan(HypermediaPlan)[artifact_id(ArtId)]. //ArtId refers to an HTTPArtifact.
 
 
-+!use_sequence_plan(Plan, ArtId,Maze) : true <-
++!use_sequence_plan(Plan, ArtId) : true <-
 ?get_sequence_plan(Plan, SequencePlan);
 cartago.invoke_obj(SequencePlan, getSequence, Sequence);
 cartago.invoke_obj(Sequence, size, N);
@@ -20,7 +20,14 @@ while (counter(X) & X<N) {
                    cartago.invoke_obj(A, getFirstPlan, P);
                    !print_plan(P);
                    !use_hypermedia_plan(P, ArtId);
-                   ?get_current_location(Maze,Room);
-                    .print(Room);
                    -+counter(X+1);
+}.
+
++!use_sequence_or_hypermedia_plan(Plan, HTTPArtifact) : true <-
+cartago.invoke_obj("maze.Util", isHypermediaPlan(Plan), B);
+if (B){
+    !use_hypermedia_plan(Plan);
+}
+else {
+    !use_sequence_plan(Plan);
 }.

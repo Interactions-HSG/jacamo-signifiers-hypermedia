@@ -21,7 +21,7 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze1")
                   //?get_first_affordance_from_structure(Signifier, Affordance).
                   ?get_first_affordance(Signifier, Affordance);
                   ?get_first_plan(Affordance, Plan);
-                  !use_sequence_plan(Plan, HTTPArtifact,Maze);
+                  !use_sequence_plan(Plan, HTTPArtifact);
                   ?get_current_location(Maze,Room);
                   .print(Room);
                   .print("end").
