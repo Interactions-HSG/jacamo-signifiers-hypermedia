@@ -1,12 +1,10 @@
-+!register(Room, Maze) <-
-invokeAction("http://example.org/register", [Room, 0])[artifact_id(Maze)].
++!register1(Room, Maze) <-
+invokeAction("http://example.org/register", [Room])[artifact_id(Maze)].
 
-+!register2(Room, Url, HTTPArtifact) : true <-
-//cartago.invoke_obj("util.FeedbackUtil", getIntListAsString([Room,0]), Payload);
-//!send_request_payload(Url, [Room, 0], HTTPArtifact).
-?two_list_to_string([Room,0], Payload);
-.print(Payload);
-!send_request_payload(Url, Payload, HTTPArtifact).
++!register(Room, Url, HTTPArtifact) : true <-
+cartago.invoke_obj("maze.Util", createPayloadFromInteger(Room), Payload);
+.concat(Url, "/register", RegisterUrl);
+!send_request_payload(RegisterUrl, Payload, HTTPArtifact).
 
 
 +?get_current_location(Maze,Room) : true <-
@@ -20,12 +18,14 @@ cartago.invoke_obj("util.FeedbackUtil", getStringAsInt(RoomString), Room);
 retrieveCurrentLocation(Url, Room)[artifact_id(HTTPArtifact)].
 
 
-+!move(Maze, M): true <-
-invokeAction("http://example.org/move", [M,0])[artifact_id(Maze)].
++!move1(Maze, M): true <-
+invokeAction("http://example.org/move", [[M]])[artifact_id(Maze)].
 
-+!move2(Url, HTTPArtifact, M): true <-
-//invokeAction("http://example.org/move", [M,0])[artifact_id(Maze)].
-move(Url, M)[artifact_id(HTTPArtifact)].
++!move(M, Url, HTTPArtifact) : true <-
+cartago.invoke_obj("maze.Util", createPayloadFromInteger(M), Payload);
+.concat(Url, "/move", MoveUrl);
+.print(MoveUrl);
+!send_request_payload(MoveUrl, Payload, HTTPArtifact).
 
 +?two_list_to_string(JasonList, StringList) : true<-
 .nth(0, JasonList, A);
@@ -34,3 +34,10 @@ cartago.new_obj("java.util.ArrayList", [], JavaList);
 cartago.invoke_obj(JavaList, add(A));
 cartago.invoke_obj(JavaList, add(B));
 cartago.invoke_obj(JavaList, toString, StringList).
+
++?create_string(Room, Payload) : true <-
+cartago.new_obj("java.util.ArrayList", [], JavaList);
+cartago.invoke_obj(JavaList, add(Room));
+cartago.invoke_obj(JavaList, toString, Payload);
+.print("payload");
+.print(Payload).

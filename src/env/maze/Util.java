@@ -162,4 +162,11 @@ public class Util {
         return b;
     }
 
+    public static String createPayloadFromInteger(int n){
+        List<Integer> list = new ArrayList<>();
+        list.add(n);
+        String s = list.toString();
+        return s;
+    }
+
 }

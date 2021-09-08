@@ -9,16 +9,6 @@
 
 +?get_size(List, Size) : true <- cartago.invoke_obj(List, size, Size).
 
-+?get_current_location_maze(Maze, X) : true <- getCurrentRoom(X)[artifact_id(Maze)].
-
-+?get_parameter_list( M, Parameters) : true <-
-cartago.invoke_obj("maze.MazeParameterList", createParameterList(M), ParameterList);
-cartago.invoke_obj(ParameterList, getParameters, Parameters).
-
-+!move(M) <-
-?get_parameter_list(M, ParameterList);
-useOperation("move", ParameterList).
-
 +?get_movement(Room1, Room2, M) : true <-
 cartago.invoke_obj("maze.Util", getGeneralDirection(Room1, Room2), M).
 

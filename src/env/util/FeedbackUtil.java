@@ -37,7 +37,6 @@ public class FeedbackUtil {
     public static List<String> getListString(Optional<Object> opObj){
         Object obj = opObj.get();
         String str = obj.toString();
-        System.out.println(str);
         List<String> strList = Arrays.asList(str.split(","));
         int n = strList.size();
         List<String> newStrList = new ArrayList<>();
@@ -68,7 +67,6 @@ public class FeedbackUtil {
                 newStrList.add(s3);
             }
         }
-        System.out.println(newStrList);
         return newStrList;
     }
 

@@ -83,7 +83,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
                 + " to room" + room2 + "plan";
         Resource affordanceId = rdf.createBNode(s1);
         Resource movementPlanId = rdf.createBNode(s2);
-        String payload = "["+movement+",0]";
+        String payload = "["+movement+"]";
         Plan movementPlan = new HypermediaPlan.Builder(movementPlanId, this.url+"/move", "POST")
                 .setPayload(payload)
                 .build();

@@ -18,7 +18,6 @@ while (counter(X) & X<N) {
                    .print(RoundDisplay);
                    cartago.invoke_obj(Sequence, get(X), A);
                    cartago.invoke_obj(A, getFirstPlan, P);
-                   !print_plan(P);
                    !use_hypermedia_plan(P, ArtId);
                    -+counter(X+1);
 }.

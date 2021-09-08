@@ -33,15 +33,12 @@ public class HTTPArtifact extends Artifact {
             request.addHeader(key, value);
         }
         if (payload.isPresent()){
-            System.out.println("payload is present");
-            System.out.println("payload: "+payload.get());
             request.setEntity(new StringEntity(payload.get()));
         }
         HttpClient client = HttpClients.createDefault();
         try {
             HttpResponse response = client.execute(request);
             System.out.println("response received");
-            System.out.println(response);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -90,7 +87,6 @@ public class HTTPArtifact extends Artifact {
     public void writePurpose(String profileUrl, State purpose){
         for (ReifiedStatement s: purpose.getStatements()){
             String str = getRDFStatement(s);
-            System.out.println("purpose: "+str);
             Map<String, String> headers = new HashMap<>();
             headers.put("Content-Type","application/json");
             headers.put("X-Agent-WebId",WEBID_PREFIX + getCurrentOpAgentId().getAgentName());
@@ -113,7 +109,6 @@ public class HTTPArtifact extends Artifact {
     public void retrieveProfile(String profileUrl, OpFeedbackParam<Object> returnParam){
         Map<String, String> headers = getStandardHeaders(true);
         String str = sendRequestReturn(profileUrl+"/profile", "POST", headers);
-        System.out.println("profile retrieved: "+str);
         returnParam.set(str);
     }
 
@@ -161,7 +156,6 @@ public class HTTPArtifact extends Artifact {
             connection.setRequestMethod("GET");
             connection.addRequestProperty("X-Agent-WebId",WEBID_PREFIX + getCurrentOpAgentId().getAgentName());
             if (connection.getResponseCode()==200){
-                System.out.println("is OK");
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(connection.getInputStream()));
                 Iterator<String> lines = in.lines().iterator();
@@ -180,9 +174,7 @@ public class HTTPArtifact extends Artifact {
     @OPERATION
     public void useHypermediaPlan(HypermediaPlan p){
         String url = p.getUrl();
-        System.out.println("url: "+url);
         String method = p.getMethod();
-        System.out.println("method: "+method);
         Map<String, String> headers = p.getHeaders();
         String agentWebId = WEBID_PREFIX + getCurrentOpAgentId().getAgentName();
         headers.put("X-Agent-WebId",agentWebId);
@@ -206,11 +198,9 @@ public class HTTPArtifact extends Artifact {
     public void createProfileArtifact(String urlString, String name, OpFeedbackParam<Object> returnParam){
         String type = "http://example.org/AgentProfileArtifact";
         String agentName = WEBID_PREFIX + getCurrentOpAgentId().getAgentName();
-        System.out.println(agentName);
         List<String> parameters = new ArrayList<>();
         parameters.add(agentName);
         String str = "{ \"artifactClass\": \"" + type + "\", \"artifactName\" : \"" + name + "\",\"initParams\": " + getRepresentation(parameters) + "}";
-        System.out.println("Body: " + str);
         BasicClassicHttpRequest request = new BasicClassicHttpRequest("POST", urlString);
         request.addHeader("Content-Type","application/json");
         request.addHeader("X-Agent-WebId",WEBID_PREFIX + getCurrentOpAgentId().getAgentName());
@@ -227,7 +217,7 @@ public class HTTPArtifact extends Artifact {
     @OPERATION
     public void registerProfile(String profileUri, String signifierArtifactUri){
         String uri = signifierArtifactUri+"/profile";
-        String payload = "["+profileUri+",0]";
+        String payload = "["+profileUri+"]";
         Map<String, String> headers = getStandardHeaders(false);
         sendRequestPayload(uri, "POST", headers, payload);
     }
@@ -235,7 +225,7 @@ public class HTTPArtifact extends Artifact {
     @OPERATION
     public void move(String mazeUrl, int m){
         String uri = mazeUrl+"/move";
-        String payload = "["+m+",0]";
+        String payload = "["+m+"]";
         Map<String, String> headers = getStandardHeaders(false);
         sendRequestPayload(uri, "POST", headers, payload);
 
@@ -247,7 +237,6 @@ public class HTTPArtifact extends Artifact {
             str = str + "\""+s+"\"";
         }
         str = str +"]";
-        System.out.println(str);
         return str;
     }
 
@@ -258,8 +247,7 @@ public class HTTPArtifact extends Artifact {
     }
 
     private String toListString(String str){
-        String paramList="[\""+str+"\",0]";
-        System.out.println("paramList: "+paramList);
+        String paramList="[\""+str+"\"]";
         return paramList;
     }
 }
