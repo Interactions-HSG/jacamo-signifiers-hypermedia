@@ -47,7 +47,9 @@ cartago.invoke_obj("util.FeedbackUtil", getListString(List), ListString);
 ?retrieve_all_contents(ListString, HTTPArtifact, ContentList);
 ?get_all_signifiers(ContentList, SignifierList);
 ?find_affordance(SignifierList, AffordancePlan, Affordance);
-cartago.invoke_obj(Affordance, getFirstPlan, Plan);
+cartago.invoke_obj(Affordance, getFirstPlan, DirectPlan);
+cartago.invoke_obj("util.FeedbackUtil", getPlanFromDirectPlan(DirectPlan), Plan);
+.print("direct plan to plan");
 !use_hypermedia_plan(Plan).
 
 

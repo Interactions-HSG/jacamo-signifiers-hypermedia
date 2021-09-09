@@ -17,35 +17,34 @@ import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.hyperagents.affordance.Affordance;
 import org.hyperagents.ontologies.SignifierOntology;
 import org.hyperagents.plan.AffordancePlan;
+import org.hyperagents.plan.DirectPlan;
+import org.hyperagents.plan.SequencePlan;
 import org.hyperagents.signifier.Signifier;
 import org.hyperagents.plan.Plan;
 import org.hyperagents.util.RDFS;
 
 import javax.json.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class FeedbackUtil {
 
-    public static String getString(Optional<Object> opObj){
+    public static String getString(Optional<Object> opObj) {
         Object obj = opObj.get();
         String str = obj.toString();
         return str;
     }
 
-    public static List<String> getListString(Optional<Object> opObj){
+    public static List<String> getListString(Optional<Object> opObj) {
         Object obj = opObj.get();
         String str = obj.toString();
         List<String> strList = Arrays.asList(str.split(","));
         int n = strList.size();
         List<String> newStrList = new ArrayList<>();
-        for (int i = 0; i<n; i++){
+        for (int i = 0; i < n; i++) {
             String s = strList.get(i);
             int l = s.length();
-            if (n>1) {
+            if (n > 1) {
                 if (i == 0 && s.charAt(0) == '[') {
                     String s2 = s.substring(1);
                     newStrList.add(s2);
@@ -55,15 +54,14 @@ public class FeedbackUtil {
                 } else {
                     newStrList.add(s);
                 }
-            }
-            else {
+            } else {
                 String s2 = s;
-                if (s.charAt(0) == '['){
+                if (s.charAt(0) == '[') {
                     s2 = s.substring(1);
                 }
                 String s3 = s2;
-                if (s2.charAt(s2.length()-1)==']'){
-                    s3 = s2.substring(0, s2.length()-1);
+                if (s2.charAt(s2.length() - 1) == ']') {
+                    s3 = s2.substring(0, s2.length() - 1);
 
                 }
                 newStrList.add(s3);
@@ -72,7 +70,7 @@ public class FeedbackUtil {
         return newStrList;
     }
 
-    public static Model retrieveModel(String content){
+    public static Model retrieveModel(String content) {
         RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
         Model model = new ModelBuilder().build();
         RDFHandler handler = new StatementCollector(model);
@@ -80,37 +78,37 @@ public class FeedbackUtil {
         InputStream stream = new ByteArrayInputStream(content.getBytes());
         try {
             parser.parse(stream);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return model;
 
     }
 
-    public static Signifier retrieveSignifier(String signifierUrl, String content){
+    public static Signifier retrieveSignifier(String signifierUrl, String content) {
         Resource signifierId = RDFS.rdf.createIRI(signifierUrl);
         Model model = retrieveModel(content);
         Signifier signifier = Signifier.readSignifier(signifierId, model);
         return signifier;
     }
 
-    public static Signifier getSignifierFromContent(String content){
+    public static Signifier getSignifierFromContent(String content) {
         Signifier signifier = null;
         Model model = retrieveModel(content);
         Optional<Resource> opSignifierId = Models.subject(model.filter(null, RDF.TYPE, RDFS.rdf.createIRI(SignifierOntology.Signifier)));
-        if (opSignifierId.isPresent()){
+        if (opSignifierId.isPresent()) {
             Resource signifierId = opSignifierId.get();
             signifier = Signifier.readSignifier(signifierId, model);
         }
         return signifier;
     }
 
-    public static Object[] getParametersFromPayload(String payload){
+    public static Object[] getParametersFromPayload(String payload) {
         Reader reader = new CharArrayReader(payload.toCharArray());
         JsonReader jsonReader = Json.createReader(reader);
         JsonArray array = jsonReader.readArray();
         List<Object> parameterList = new ArrayList<>();
-        for (int i = 0; i<array.size(); i++){
+        for (int i = 0; i < array.size(); i++) {
             int a = array.getInt(i);
             parameterList.add(a);
 
@@ -118,51 +116,51 @@ public class FeedbackUtil {
         return parameterList.toArray();
     }
 
-    public static String getStringPlan(Plan p){
+    public static String getStringPlan(Plan p) {
         Model model = p.getModel();
         RDFFormat format = RDFFormat.TURTLE;
-        ByteArrayOutputStream output=new ByteArrayOutputStream();
-        Rio.write(model,output,format);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Rio.write(model, output, format);
         return output.toString();
 
     }
 
-    public static int getStringAsInt(String s){
+    public static int getStringAsInt(String s) {
         int n = Integer.parseInt(s);
         return n;
     }
 
-    public static String getContent(Signifier signifier){
+    public static String getContent(Signifier signifier) {
         return signifier.getTextTriples(RDFFormat.TURTLE);
     }
 
-    public static String getIntListAsString(List<Integer> list){
+    public static String getIntListAsString(List<Integer> list) {
         return list.toString();
     }
 
-    public static void printModel(Model m){
-        ByteArrayOutputStream output=new ByteArrayOutputStream();
-        Rio.write(m,output,RDFFormat.TURTLE);
+    public static void printModel(Model m) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Rio.write(m, output, RDFFormat.TURTLE);
         System.out.println(output.toString());
 
     }
 
-    public static List<Signifier> getAllSignifiers(List<String> contentList){
+    public static List<Signifier> getAllSignifiers(List<String> contentList) {
         List<Signifier> signifiers = new ArrayList<>();
-        for (int i =0; i<contentList.size(); i++){
+        for (int i = 0; i < contentList.size(); i++) {
             Signifier s = getSignifierFromContent(contentList.get(i));
             signifiers.add(s);
         }
         return signifiers;
     }
 
-    public static Affordance findAffordance(List<Signifier> signifiers, AffordancePlan affordancePlan){
+    public static Affordance findAffordance(List<Signifier> signifiers, AffordancePlan affordancePlan) {
         int n = signifiers.size();
-        for (int i=0; i<n;i++){
+        for (int i = 0; i < n; i++) {
             Signifier s = signifiers.get(i);
             List<Affordance> affordances = s.getAffordanceList();
-            for (Affordance affordance : affordances){
-                if (affordancePlan.satisfyPlan(affordance)){
+            for (Affordance affordance : affordances) {
+                if (affordancePlan.satisfyPlan(affordance)) {
                     return affordance;
                 }
             }
@@ -170,4 +168,51 @@ public class FeedbackUtil {
         return null;
     }
 
+    public static Plan getPlanFromDirectPlan(DirectPlan p) {
+        Plan plan = new Plan.Builder(p.getId()).addModel(p.getModel()).build();
+        return plan;
+    }
+
+    public static Plan getSequencePlan(List<Signifier> signifiers) {
+        for (Signifier signifier : signifiers) {
+            Set<Affordance> affordances = signifier.getAffordances();
+            for (Affordance affordance : affordances) {
+                Set<DirectPlan> plans = affordance.getPlans();
+                for (DirectPlan plan : plans) {
+                    if (SequencePlan.hasSequence(plan)){
+                        return plan;
+                    }
+                }
+            }
+        }
+        return null;
+
+    }
+
+    public static boolean hasSequencePlan(Signifier signifier){
+        boolean b = false;
+        Set<Affordance> affordances = signifier.getAffordances();
+        for (Affordance affordance : affordances) {
+            Set<DirectPlan> plans = affordance.getPlans();
+            for (DirectPlan plan : plans) {
+                if (SequencePlan.hasSequence(plan)){
+                    b = true;
+                }
+            }
+        }
+        return b;
+    }
+
+    public static Plan getSequencePlan(Signifier signifier){
+        Set<Affordance> affordances = signifier.getAffordances();
+        for (Affordance affordance : affordances) {
+            Set<DirectPlan> plans = affordance.getPlans();
+            for (DirectPlan plan : plans) {
+                if (SequencePlan.hasSequence(plan)){
+                    return plan;
+                }
+            }
+        }
+        return null;
+    }
 }
