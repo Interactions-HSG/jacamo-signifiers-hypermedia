@@ -23,7 +23,7 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze3")
                            .print("affordance retrieved");
                            ?get_first_plan(Affordance, Plan);
                            .print("plan retrieved");
-                           !use_sequence_plan(Plan, HTTPArtifact);
+                           !use_sequence_plan(Plan, HTTPArtifact, Maze);
                            ?get_current_location(Maze, Room);
                            .print(Room);
                            .print("end").

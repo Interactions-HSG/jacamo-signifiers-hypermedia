@@ -14,9 +14,11 @@ import org.eclipse.rdf4j.rio.RDFHandler;
 import org.eclipse.rdf4j.rio.RDFParser;
 import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
+import org.hyperagents.affordance.Affordance;
 import org.hyperagents.ontologies.SignifierOntology;
+import org.hyperagents.plan.AffordancePlan;
 import org.hyperagents.signifier.Signifier;
-import org.hyperagents.util.Plan;
+import org.hyperagents.plan.Plan;
 import org.hyperagents.util.RDFS;
 
 import javax.json.*;
@@ -143,6 +145,29 @@ public class FeedbackUtil {
         Rio.write(m,output,RDFFormat.TURTLE);
         System.out.println(output.toString());
 
+    }
+
+    public static List<Signifier> getAllSignifiers(List<String> contentList){
+        List<Signifier> signifiers = new ArrayList<>();
+        for (int i =0; i<contentList.size(); i++){
+            Signifier s = getSignifierFromContent(contentList.get(i));
+            signifiers.add(s);
+        }
+        return signifiers;
+    }
+
+    public static Affordance findAffordance(List<Signifier> signifiers, AffordancePlan affordancePlan){
+        int n = signifiers.size();
+        for (int i=0; i<n;i++){
+            Signifier s = signifiers.get(i);
+            List<Affordance> affordances = s.getAffordanceList();
+            for (Affordance affordance : affordances){
+                if (affordancePlan.satisfyPlan(affordance)){
+                    return affordance;
+                }
+            }
+        }
+        return null;
     }
 
 }

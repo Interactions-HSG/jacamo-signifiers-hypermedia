@@ -4,7 +4,7 @@ import org.eclipse.rdf4j.model.*;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.hyperagents.hypermedia.HypermediaOntology;
-import org.hyperagents.util.Plan;
+import org.hyperagents.plan.Plan;
 import org.hyperagents.util.RDFS;
 import org.hyperagents.util.State;
 

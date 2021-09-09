@@ -1,4 +1,4 @@
-maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze").
+maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze5").
 
 +!start : maze_url(Url) <- .print("Start");
                   ?get_thing_artifact("maze2", Url, Maze);
@@ -12,7 +12,7 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze").
                   ?retrieve_signifier(SignifierContent, Signifier);
                   ?get_first_affordance(Signifier, Affordance);
                   ?get_first_plan(Affordance, Plan);
-                  !use_sequence_plan(Plan, HTTPArtifact);
+                  !use_sequence_plan(Plan, HTTPArtifact, Maze);
                   ?get_current_location(Maze,Room);
                   .print(Room);
                   .print("end").

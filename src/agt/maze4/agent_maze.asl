@@ -37,7 +37,7 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze4")
                            addSignifier("signifier2",Signifier2)[artifact_id(SignifierBase)];
                            ?get_first_affordance(Signifier1, A1);
                            ?get_first_plan(A1, P1);
-                           !use_sequence_plan(P1, HTTPArtifact);
+                           !use_sequence_plan(P1, HTTPArtifact, Maze);
                            ?get_current_location(Maze, Room);
                            .print(Room);
                            !second_part;
