@@ -154,13 +154,18 @@ public class FeedbackUtil {
         return signifiers;
     }
 
-    public static Affordance findAffordance(List<Signifier> signifiers, AffordancePlan affordancePlan) {
-        int n = signifiers.size();
+    public static Affordance findAffordance(Object[] signifiers, AffordancePlan affordancePlan) {
+        int n = signifiers.length;
+        System.out.println("objective");
+        System.out.println(affordancePlan.getObjective());
         for (int i = 0; i < n; i++) {
-            Signifier s = signifiers.get(i);
+            Signifier s = getSignifierFromContent(signifiers[i].toString());
+            System.out.println("signifier: "+i);
             List<Affordance> affordances = s.getAffordanceList();
             for (Affordance affordance : affordances) {
+                System.out.println(affordance);
                 if (affordancePlan.satisfyPlan(affordance)) {
+                    System.out.println("found affordance");
                     return affordance;
                 }
             }
@@ -209,10 +214,12 @@ public class FeedbackUtil {
             Set<DirectPlan> plans = affordance.getPlans();
             for (DirectPlan plan : plans) {
                 if (SequencePlan.hasSequence(plan)){
-                    return plan;
+                    return getPlanFromDirectPlan(plan);
                 }
             }
         }
         return null;
     }
+
+
 }

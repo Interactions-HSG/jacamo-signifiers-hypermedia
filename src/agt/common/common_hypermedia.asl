@@ -48,14 +48,16 @@ for (.range(I, 0, Size-1)){
 ?get_all_signifiers(ContentList, SignifierList).
 
 +?find_affordance(SignifierList, AffordancePlan, Affordance) : true <-
-cartago.invoke_obj("util.FeedbackUtil", findAffordance(SignifierList, AffordancePlan), AffordancePlan).
+cartago.invoke_obj("util.FeedbackUtil", findAffordance(SignifierList, AffordancePlan), Affordance).
 
 +?find_sequence_plan(SignifierList, Plan): true <-
 cartago.invoke_obj(SignifierList, size, Size);
 for (.range(I, 0, Size-1)){
     cartago.invoke_obj(SignifierList, get(I), Signifier);
+    !print_object(Signifier);
     cartago.invoke_obj("util.FeedbackUtil", hasSequencePlan(Signifier), B);
     if (B){
+    .print("plan found");
     cartago.invoke_obj("util.FeedbackUtil", getSequencePlan(Signifier), Plan);
     }
 

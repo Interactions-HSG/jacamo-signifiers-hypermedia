@@ -12,3 +12,8 @@ cartago.invoke_obj(Signifier, toString, SignifierString);
 +!print_object(Object) : true <-
 cartago.invoke_obj(Object, toString, String);
 .print(String).
+
++!print_class(Object) : true <-
+cartago.invoke_obj(Object, getClass, ObjectClass);
+cartago.invoke_obj(ObjectClass, toString, ClassString);
+.print(ClassString).

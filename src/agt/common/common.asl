@@ -12,6 +12,19 @@
 +?get_movement(Room1, Room2, M) : true <-
 cartago.invoke_obj("maze.Util", getGeneralDirection(Room1, Room2), M).
 
++?create_empty_list(JasonList) : true <-
+.concat([],[], JasonList);
+.print(JasonList).
+
++?to_jason_list(List, JasonList) : true <-
+?create_empty_list(JasonList);
+?get_size(List, Size);
+for (.range(I, 0, Size-1)){
+    ?get(List, I, E);
+    !print_class(E);
+    .concat(JasonList, [E], JasonList);
+}.
+
 { include("common_affordance.asl") }
 { include("common_artifacts.asl") }
 { include("common_beliefs.asl") }
