@@ -275,18 +275,20 @@ public class MazeUtil {
                 List<Plan> sequence = new ArrayList<>();
                 int i = 0;
                 while (fromRoomId != toRoomId) {
+                    System.out.println("iteration: "+i);
                     i++;
                     List<Integer> list = getLocalMovement(fromRoomId, toRoomId);
                     int newRoom = list.get(0).intValue();
+                    System.out.println("new room: "+newRoom);
                     int m = list.get(1).intValue();
-                    Resource affordanceId = rdf.createBNode("from" + fromRoomId + "to" + newRoom + "affordance");
+                    System.out.println("movement: "+m);
                     Resource affordancePlanId = rdf.createBNode("from" + fromRoomId + "to" + newRoom + "affordancePlan");
-                    Affordance affordance = getLocalMoveAffordance(affordanceId, fromRoomId, m);
                     Plan affordancePlan = createAffordancePlanFromRoomNb(affordancePlanId, newRoom);
                     fromRoomId = newRoom;
                     sequence.add(affordancePlan);
 
                 }
+                System.out.println("sequence length: "+sequence.size());
                 builder.addSequence(sequence);
                 plan = builder.build();
 
@@ -429,7 +431,7 @@ public class MazeUtil {
         return objective;
     }
 
-    public static Plan getPlan1(){
+    public static Plan getPlan11(){
         String mazeUri = "abc";
         Signifier s = createPathSignifierUri(mazeUri,1,9);
         Plan p = s.getAffordanceList().get(0).getFirstPlan();
@@ -437,5 +439,11 @@ public class MazeUtil {
         Plan plan = new Plan.Builder(p.getId()).addModel(p.getModel()).build();
         System.out.println(plan.getClass().toString());
         return plan;
+    }
+
+    public static Plan getPlan1(){
+        System.out.println("create plan 1");
+        DirectPlan directPlan = getMovePlan(rdf.createBNode(), 1, 9);
+        return directPlan.toPlan();
     }
 }

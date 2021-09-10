@@ -20,8 +20,8 @@ workshop_url("http://localhost:8080/environments/61/workspaces/102/artifacts/wor
                    .print(SignifierContent);
                    ?retrieve_signifier(SignifierContent, Signifier);
                    ?get_first_affordance(Signifier, Affordance);
-                   ?get_first_plan(Affordance, DirectPlan);
-                   cartago.invoke_obj("util.FeedbackUtil", getPlanFromDirectPlan(DirectPlan), Plan);
+                   ?get_first_plan(Affordance, Plan);
+                   //cartago.invoke_obj("util.FeedbackUtil", getPlanFromDirectPlan(DirectPlan), Plan);
                    !use_hypermedia_plan(Plan, HTTPArtifact);
                    .print("action done").
 

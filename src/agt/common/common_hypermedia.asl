@@ -15,7 +15,6 @@ cartago.new_obj("java.util.ArrayList", [], ContentList);
 cartago.invoke_obj(List, size, Size);
 for (.range(I, 0, Size-1)){
     cartago.invoke_obj(List, get(I), Url);
-    .print(Url);
     ?retrieve_content(Url, HTTPArtifact, Content);
     cartago.invoke_obj(ContentList, add(Content));
 
@@ -47,10 +46,15 @@ for (.range(I, 0, Size-1)){
 ?retrieve_all_contents(List, HTTPArtifact, ContentList);
 ?get_all_signifiers(ContentList, SignifierList).
 
++?retrieve_signifiers_array(List, HTTPArtifact, SignifierArray) : true <-
+?retrieve_all_contents(List, HTTPArtifact, ContentList);
+?get_all_signifiers(ContentList, SignifierList);
+cartago.invoke_obj(SignifierList, toArray, SignifierArray).
+
 +?find_affordance(SignifierList, AffordancePlan, Affordance) : true <-
 cartago.invoke_obj("util.FeedbackUtil", findAffordance(SignifierList, AffordancePlan), Affordance).
 
-+?find_sequence_plan(SignifierList, Plan): true <-
++?find_sequence_plan1(SignifierList, Plan): true <-
 cartago.invoke_obj(SignifierList, size, Size);
 for (.range(I, 0, Size-1)){
     cartago.invoke_obj(SignifierList, get(I), Signifier);
@@ -62,6 +66,9 @@ for (.range(I, 0, Size-1)){
     }
 
 }.
+
++?find_sequence_plan(SignifierArray, Plan): true <-
+cartago.invoke_obj("util.FeedbackUtil", findSequencePlan(SignifierArray), Plan).
 
 +?create_profile(Url, Name, HTTPArtifact, ProfileUrl) : true <-
 createProfileArtifact(Url, Name, ProfileUrl)[artifact_id(HTTPArtifact)].

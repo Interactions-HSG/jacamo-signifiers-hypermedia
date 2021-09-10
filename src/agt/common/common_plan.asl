@@ -47,11 +47,11 @@ cartago.invoke_obj("util.FeedbackUtil", getListString(List), ListString);
 cartago.invoke_obj(SignifierList, toArray, SignifierArray);
 ?find_affordance(SignifierArray, AffordancePlan, Affordance);
 .print("affordance retrieved");
-.print(Affordance);
 cartago.invoke_obj(Affordance, getFirstPlan, Plan);
+!print_object(Plan);
 //cartago.invoke_obj("util.FeedbackUtil", getPlanFromDirectPlan(DirectPlan), Plan);
 //.print("direct plan to plan");
-!use_hypermedia_plan(Plan).
+!use_hypermedia_plan(Plan, HTTPArtifact).
 
 
 

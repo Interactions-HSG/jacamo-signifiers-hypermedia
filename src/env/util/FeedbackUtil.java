@@ -6,6 +6,7 @@ import ch.unisg.ics.interactions.wot.td.vocabularies.TD;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.Resource;
+import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
@@ -22,6 +23,7 @@ import org.hyperagents.plan.SequencePlan;
 import org.hyperagents.signifier.Signifier;
 import org.hyperagents.plan.Plan;
 import org.hyperagents.util.RDFS;
+import org.hyperagents.util.State;
 
 import javax.json.*;
 import java.io.*;
@@ -86,13 +88,16 @@ public class FeedbackUtil {
     }
 
     public static Signifier retrieveSignifier(String signifierUrl, String content) {
-        Resource signifierId = RDFS.rdf.createIRI(signifierUrl);
+        //Resource signifierId = RDFS.rdf.createIRI(signifierUrl);
         Model model = retrieveModel(content);
+        Optional<Resource> opSignifierId = Models.subject(model.filter(null, RDF.TYPE, RDFS.rdf.createIRI(SignifierOntology.Signifier)));
+        Resource signifierId = opSignifierId.get();
         Signifier signifier = Signifier.readSignifier(signifierId, model);
         return signifier;
     }
 
     public static Signifier getSignifierFromContent(String content) {
+        System.out.println(content);
         Signifier signifier = null;
         Model model = retrieveModel(content);
         Optional<Resource> opSignifierId = Models.subject(model.filter(null, RDF.TYPE, RDFS.rdf.createIRI(SignifierOntology.Signifier)));
@@ -154,13 +159,31 @@ public class FeedbackUtil {
         return signifiers;
     }
 
-    public static Affordance findAffordance(Object[] signifiers, AffordancePlan affordancePlan) {
+    public static Plan findSequencePlan(Object[] signifiers){
         int n = signifiers.length;
-        System.out.println("objective");
-        System.out.println(affordancePlan.getObjective());
         for (int i = 0; i < n; i++) {
             Signifier s = getSignifierFromContent(signifiers[i].toString());
-            System.out.println("signifier: "+i);
+            List<Affordance> affordances = s.getAffordanceList();
+            for (Affordance affordance : affordances) {
+                Set<DirectPlan> plans = affordance.getPlans();
+                for (DirectPlan plan : plans){
+                    if (SequencePlan.hasSequence(plan)){
+                        return getPlanFromDirectPlan(plan);
+                    }
+                }
+            }
+        }
+        return null;
+
+    }
+
+    public static Affordance findAffordance(Object[] signifiers, AffordancePlan affordancePlan) {
+        int n = signifiers.length;
+        State objective = affordancePlan.getObjective();
+        Statement objectiveStatement = new Vector<Statement>(objective.getStatementSet()).firstElement();
+        System.out.println(objectiveStatement);
+        for (int i = 0; i < n; i++) {
+            Signifier s = getSignifierFromContent(signifiers[i].toString());
             List<Affordance> affordances = s.getAffordanceList();
             for (Affordance affordance : affordances) {
                 System.out.println(affordance);
@@ -170,8 +193,10 @@ public class FeedbackUtil {
                 }
             }
         }
+
         return null;
     }
+
 
     public static Plan getPlanFromDirectPlan(DirectPlan p) {
         Plan plan = new Plan.Builder(p.getId()).addModel(p.getModel()).build();
@@ -217,6 +242,17 @@ public class FeedbackUtil {
                     return getPlanFromDirectPlan(plan);
                 }
             }
+        }
+        return null;
+    }
+
+    public State retrievePrecondition(Affordance affordance){
+        System.out.println("retrieve precondition");
+        Optional<State> opPrecondition = affordance.getPrecondition();
+        System.out.println("optional precondition");
+        if (opPrecondition.isPresent()){
+            System.out.println("has precondition");
+            return opPrecondition.get();
         }
         return null;
     }

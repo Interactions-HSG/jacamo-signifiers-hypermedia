@@ -14,15 +14,9 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze3")
                            ?retrieve_signifiers(Maze, List);
                            .print("signifiers received");
                            cartago.invoke_obj("util.FeedbackUtil", getListString(List), ListString);
-                           ?get0(ListString, SignifierUrl);
-                           ?retrieve_content(SignifierUrl, HTTPArtifact, SignifierContent);
-                           .print("content received");
-                           ?retrieve_signifier(SignifierContent, Signifier);
-                           .print("signifier retrieved");
-                           ?get_first_affordance(Signifier, Affordance);
-                           .print("affordance retrieved");
-                           ?get_first_plan(Affordance, Plan);
-                           .print("plan retrieved");
+                           ?retrieve_signifiers_array(ListString, HTTPArtifact, SignifierArray);
+                           .print("signifier list retrieved");
+                           ?find_sequence_plan(SignifierArray, Plan);
                            !use_sequence_plan(Plan, HTTPArtifact, Maze);
                            ?get_current_location(Maze, Room);
                            .print(Room);
