@@ -32,9 +32,15 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze4")
                                     ?get0(AList, Signifier2);
                                     ?get1(AList, Signifier1);
                            }
+                           .print("signifier1");
+                           !print_object(Signifier1);
+                           .print("signifier2");
+                           !print_object(Signifier2);
                            addSignifier("signifier2",Signifier2)[artifact_id(SignifierBase)];
                            ?get_first_affordance(Signifier1, A1);
                            ?get_first_plan(A1, P1);
+                           .print("print plan 1");
+                           !print_object(P1);
                            .print("before use sequence plan");
                            !use_sequence_plan(P1, HTTPArtifact, Maze);
                            ?get_current_location(Maze, Room);
@@ -60,6 +66,7 @@ retrieveSignifier("signifier2", Signifier);
 .print("affordance retrieved");
 ?get_first_plan(A, P);
 .print("plan retrieved");
+!print_object(P);
 !use_hypermedia_plan(P, HTTPArtifact);
 ?get_current_location(Maze, Room);
 .print(Room);

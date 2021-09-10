@@ -246,12 +246,9 @@ public class FeedbackUtil {
         return null;
     }
 
-    public State retrievePrecondition(Affordance affordance){
-        System.out.println("retrieve precondition");
+    public static State retrievePrecondition(Affordance affordance){
         Optional<State> opPrecondition = affordance.getPrecondition();
-        System.out.println("optional precondition");
         if (opPrecondition.isPresent()){
-            System.out.println("has precondition");
             return opPrecondition.get();
         }
         return null;

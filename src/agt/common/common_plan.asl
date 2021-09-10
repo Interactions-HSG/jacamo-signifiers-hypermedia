@@ -3,6 +3,7 @@ cartago.invoke_obj("org.hyperagents.plan.SequencePlan", getAsSequencePlan(Plan),
 
 +!use_hypermedia_plan(P, ArtId) : true <-
 cartago.invoke_obj("org.hyperagents.hypermedia.HypermediaPlan", getAsHypermediaPlan(P), HypermediaPlan);
+.print(HypermediaPlan);
 useHypermediaPlan(HypermediaPlan)[artifact_id(ArtId)]. //ArtId refers to an HTTPArtifact.
 
 
