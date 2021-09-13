@@ -1,13 +1,24 @@
 package maze;
 
 import org.eclipse.rdf4j.model.*;
+import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.util.Models;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandler;
+import org.eclipse.rdf4j.rio.RDFParser;
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.hyperagents.hypermedia.HypermediaOntology;
+import org.hyperagents.ontologies.SignifierOntology;
 import org.hyperagents.plan.Plan;
+import org.hyperagents.signifier.Signifier;
 import org.hyperagents.util.RDFS;
 import org.hyperagents.util.State;
+import org.hyperagents.affordance.Affordance;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 public class Util {
@@ -167,6 +178,47 @@ public class Util {
         list.add(n);
         String s = list.toString();
         return s;
+    }
+
+    /*public static boolean isFirstSignifier(Signifier signifier){
+        State precondition = signifier.getAffordanceList().get(0).getPrecondition().get();
+        return hasPrecondition(precondition, 1);
+
+
+    }*/
+
+    public static Model retrieveModel(String content) {
+        RDFParser parser = Rio.createParser(RDFFormat.TURTLE);
+        Model model = new ModelBuilder().build();
+        RDFHandler handler = new StatementCollector(model);
+        parser.setRDFHandler(handler);
+        InputStream stream = new ByteArrayInputStream(content.getBytes());
+        try {
+            parser.parse(stream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return model;
+
+    }
+
+    public static Signifier getSignifierFromContent(String content) {
+        System.out.println(content);
+        Signifier signifier = null;
+        Model model = retrieveModel(content);
+        Optional<Resource> opSignifierId = Models.subject(model.filter(null, RDF.TYPE, RDFS.rdf.createIRI(SignifierOntology.Signifier)));
+        if (opSignifierId.isPresent()) {
+            Resource signifierId = opSignifierId.get();
+            signifier = Signifier.readSignifier(signifierId, model);
+        }
+        return signifier;
+    }
+
+    public static boolean isFirstSignifier(Object object){
+        Signifier signifier = getSignifierFromContent(object.toString());
+        State precondition = signifier.getAffordanceList().get(0).getPrecondition().get();
+        return hasPrecondition(precondition, 1);
+
     }
 
 }

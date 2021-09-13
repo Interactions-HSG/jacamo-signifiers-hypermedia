@@ -70,6 +70,9 @@ for (.range(I, 0, Size-1)){
 +?find_sequence_plan(SignifierArray, Plan): true <-
 cartago.invoke_obj("util.FeedbackUtil", findSequencePlan(SignifierArray), Plan).
 
++?find_sequence_plan_signifiers(SignifierArray, SignifierList): true <-
+cartago.invoke_obj("util.FeedbackUtil", findSequencePlanSignifiers(SignifierArray), SignifierList).
+
 +?create_profile(Url, Name, HTTPArtifact, ProfileUrl) : true <-
 createProfileArtifact(Url, Name, ProfileUrl)[artifact_id(HTTPArtifact)].
 

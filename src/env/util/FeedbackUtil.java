@@ -16,12 +16,10 @@ import org.eclipse.rdf4j.rio.RDFParser;
 import org.eclipse.rdf4j.rio.Rio;
 import org.eclipse.rdf4j.rio.helpers.StatementCollector;
 import org.hyperagents.affordance.Affordance;
+import org.hyperagents.hypermedia.HypermediaOntology;
 import org.hyperagents.ontologies.SignifierOntology;
-import org.hyperagents.plan.AffordancePlan;
-import org.hyperagents.plan.DirectPlan;
-import org.hyperagents.plan.SequencePlan;
+import org.hyperagents.plan.*;
 import org.hyperagents.signifier.Signifier;
-import org.hyperagents.plan.Plan;
 import org.hyperagents.util.RDFS;
 import org.hyperagents.util.State;
 
@@ -177,6 +175,24 @@ public class FeedbackUtil {
 
     }
 
+    public static List<Signifier> findSequencePlanSignifiers(Object[] signifiers){
+        List<Signifier> signifierList = new ArrayList<>();
+        int n = signifiers.length;
+        for (int i = 0; i < n; i++) {
+            Signifier s = getSignifierFromContent(signifiers[i].toString());
+            List<Affordance> affordances = s.getAffordanceList();
+            for (Affordance affordance : affordances) {
+                Set<DirectPlan> plans = affordance.getPlans();
+                for (DirectPlan plan : plans){
+                    if (SequencePlan.hasSequence(plan)){
+                        signifierList.add(s);
+                    }
+                }
+            }
+        }
+        return signifierList;
+    }
+
     public static Affordance findAffordance(Object[] signifiers, AffordancePlan affordancePlan) {
         int n = signifiers.length;
         State objective = affordancePlan.getObjective();
@@ -195,6 +211,25 @@ public class FeedbackUtil {
         }
 
         return null;
+    }
+
+    public static boolean isBasicAffordance(Affordance affordance){
+        boolean b = true;
+        Set<DirectPlan> plans = affordance.getPlans();
+        for (DirectPlan plan : plans){
+            Model model = plan.getModel();
+            Set<Resource> types = Models.objectResources(model.filter(plan.getId(), RDF.TYPE, null));
+            boolean b2 = true;
+            for (Resource type : types){
+                if (type.equals(HypermediaOntology.HypermediaPlan)){
+                    b2 = false;
+                }
+            }
+            if (b2){
+                b = false;
+            }
+        }
+        return b;
     }
 
 
