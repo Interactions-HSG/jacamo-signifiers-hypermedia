@@ -233,7 +233,7 @@ public class MazeUtil {
                 .setPrecondition(fromRoom)
                 .setPostcondition(toRoom)
                 .addObjective(toRoom)
-                .addPlan(plan)
+                //.addPlan(plan)
                 .build();
         return affordance;
     }
@@ -249,7 +249,7 @@ public class MazeUtil {
                 .setPrecondition(fromRoom)
                 .setPostcondition(toRoom)
                 .addObjective(toRoom)
-                .addPlan(plan)
+                //.addPlan(plan)
                 .build();
         return affordance;
     }
@@ -343,7 +343,7 @@ public class MazeUtil {
                 .setPrecondition(fromRoom)
                 .setPostcondition(toRoom)
                 .addObjective(toRoom)
-                .addPlan(movePlan)
+                //.addPlan(movePlan)
                 .build();
         return affordance;
     }
@@ -358,7 +358,7 @@ public class MazeUtil {
                 .setPrecondition(fromRoom)
                 .setPostcondition(toRoom)
                 .addObjective(toRoom)
-                .addPlan(movePlan)
+                //.addPlan(movePlan)
                 .build();
         return affordance;
     }
@@ -434,7 +434,7 @@ public class MazeUtil {
     public static Plan getPlan11(){
         String mazeUri = "abc";
         Signifier s = createPathSignifierUri(mazeUri,1,9);
-        Plan p = s.getAffordanceList().get(0).getFirstPlan();
+        Plan p = null; //s.getAffordanceList().get(0).getFirstPlan();
         System.out.println(p.getClass().toString());
         Plan plan = new Plan.Builder(p.getId()).addModel(p.getModel()).build();
         System.out.println(plan.getClass().toString());

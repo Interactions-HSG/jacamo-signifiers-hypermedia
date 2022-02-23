@@ -1,6 +1,9 @@
 +?get_first_plan(Affordance, Plan) : true <-
 cartago.invoke_obj(Affordance, getFirstPlan, Plan).
 
++?get_first_action(Affordance, Action) : true <-
+cartago.invoke_obj(Affordance, getFirstAction, Action).
+
 +?get_precondition1(Affordance, Precondition) : true <-
 cartago.invoke_obj(Affordance, getPrecondition, OpPrecondition);
 cartago.invoke_obj(OpPrecondition, get, Precondition).

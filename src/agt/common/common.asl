@@ -31,6 +31,7 @@ for (.range(I, 0, Size-1)){
 { include("common_hypermedia.asl") }
 { include("common_maze.asl") }
 { include("common_plan.asl") }
+{ include("common_action.asl") }
 { include("common_signifier.asl") }
 { include("common_state.asl") }
 { include("common_print.asl") }

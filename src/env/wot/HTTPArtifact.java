@@ -10,12 +10,22 @@ import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
+import org.eclipse.rdf4j.model.IRI;
+import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.model.Resource;
+import org.hyperagents.hypermedia.HypermediaAction;
 import org.hyperagents.hypermedia.HypermediaPlan;
+import org.hyperagents.ontologies.SignifierOntology;
+import org.hyperagents.util.RDFS;
 import org.hyperagents.util.ReifiedStatement;
 import org.hyperagents.util.State;
+import util.AgentProfileOntology;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -106,6 +116,28 @@ public class HTTPArtifact extends Artifact {
     }
 
     @OPERATION
+    public void writeMaxSignifiers(String profileUrl, int maxSignifiers){
+        System.out.println("write max signifiers");
+        System.out.println("profile url: "+profileUrl);
+        System.out.println("max signifiers: "+maxSignifiers);
+        Resource id = RDFS.rdf.createBNode();
+        Resource subject = RDFS.rdf.createIRI(AgentProfileOntology.thisAgent);
+        IRI predicate = RDFS.rdf.createIRI(AgentProfileOntology.maxSignifiers);
+        Literal value = RDFS.rdf.createLiteral(maxSignifiers);
+        ReifiedStatement s = new ReifiedStatement(id, subject, predicate, value );
+        String str = getRDFStatement(s);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type","application/json");
+        headers.put("X-Agent-WebId",WEBID_PREFIX + getCurrentOpAgentId().getAgentName());
+        System.out.println("before send request");
+        String body = "["+maxSignifiers+"]";
+        System.out.println("body: "+ body);
+        sendRequestPayload(profileUrl+"/max", "POST", headers, toListString(str));
+        System.out.println("after send request");
+
+    }
+
+    @OPERATION
     public void retrieveProfile(String profileUrl, OpFeedbackParam<Object> returnParam){
         Map<String, String> headers = getStandardHeaders(true);
         String str = sendRequestReturn(profileUrl+"/profile", "POST", headers);
@@ -181,6 +213,17 @@ public class HTTPArtifact extends Artifact {
         Optional<String> payload = p.getPayload();
         sendRequest(url, method, headers, payload);
 }
+
+    @OPERATION
+    public void useHypermediaAction(HypermediaAction action){
+        String url = action.getUrl();
+        String method = action.getMethod();
+        Map<String, String> headers = action.getHeaders();
+        String agentWebId = WEBID_PREFIX + getCurrentOpAgentId().getAgentName();
+        headers.put("X-Agent-WebId",agentWebId);
+        Optional<String> payload = action.getPayload();
+        sendRequest(url, method, headers, payload);
+    }
 
     @OPERATION
     public void retrieveCurrentLocation(String mazeUrl, OpFeedbackParam<Integer> returnParam){

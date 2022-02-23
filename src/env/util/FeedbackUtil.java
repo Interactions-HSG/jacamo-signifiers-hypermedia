@@ -95,12 +95,16 @@ public class FeedbackUtil {
     }
 
     public static Signifier getSignifierFromContent(String content) {
-        System.out.println(content);
+        System.out.println("get signifier from content");
+        //System.out.println(content);
         Signifier signifier = null;
         Model model = retrieveModel(content);
+        System.out.println("model retrieved");
         Optional<Resource> opSignifierId = Models.subject(model.filter(null, RDF.TYPE, RDFS.rdf.createIRI(SignifierOntology.Signifier)));
         if (opSignifierId.isPresent()) {
+            System.out.println("signifier id is present");
             Resource signifierId = opSignifierId.get();
+            System.out.println("signifier id retrieved");
             signifier = Signifier.readSignifier(signifierId, model);
         }
         return signifier;
@@ -163,7 +167,7 @@ public class FeedbackUtil {
             Signifier s = getSignifierFromContent(signifiers[i].toString());
             List<Affordance> affordances = s.getAffordanceList();
             for (Affordance affordance : affordances) {
-                Set<DirectPlan> plans = affordance.getPlans();
+                Set<DirectPlan> plans = new HashSet(); // affordance.getPlans();
                 for (DirectPlan plan : plans){
                     if (SequencePlan.hasSequence(plan)){
                         return getPlanFromDirectPlan(plan);
@@ -182,7 +186,7 @@ public class FeedbackUtil {
             Signifier s = getSignifierFromContent(signifiers[i].toString());
             List<Affordance> affordances = s.getAffordanceList();
             for (Affordance affordance : affordances) {
-                Set<DirectPlan> plans = affordance.getPlans();
+                Set<DirectPlan> plans = new HashSet<>(); // affordance.getPlans();
                 for (DirectPlan plan : plans){
                     if (SequencePlan.hasSequence(plan)){
                         signifierList.add(s);
@@ -215,7 +219,7 @@ public class FeedbackUtil {
 
     public static boolean isBasicAffordance(Affordance affordance){
         boolean b = true;
-        Set<DirectPlan> plans = affordance.getPlans();
+        Set<DirectPlan> plans = new HashSet<>(); // affordance.getPlans();
         for (DirectPlan plan : plans){
             Model model = plan.getModel();
             Set<Resource> types = Models.objectResources(model.filter(plan.getId(), RDF.TYPE, null));
@@ -242,7 +246,7 @@ public class FeedbackUtil {
         for (Signifier signifier : signifiers) {
             Set<Affordance> affordances = signifier.getAffordances();
             for (Affordance affordance : affordances) {
-                Set<DirectPlan> plans = affordance.getPlans();
+                Set<DirectPlan> plans = new HashSet<>();
                 for (DirectPlan plan : plans) {
                     if (SequencePlan.hasSequence(plan)){
                         return plan;
@@ -258,7 +262,7 @@ public class FeedbackUtil {
         boolean b = false;
         Set<Affordance> affordances = signifier.getAffordances();
         for (Affordance affordance : affordances) {
-            Set<DirectPlan> plans = affordance.getPlans();
+            Set<DirectPlan> plans = new HashSet<>();
             for (DirectPlan plan : plans) {
                 if (SequencePlan.hasSequence(plan)){
                     b = true;
@@ -271,7 +275,7 @@ public class FeedbackUtil {
     public static Plan getSequencePlan(Signifier signifier){
         Set<Affordance> affordances = signifier.getAffordances();
         for (Affordance affordance : affordances) {
-            Set<DirectPlan> plans = affordance.getPlans();
+            Set<DirectPlan> plans = new HashSet<>(); // affordance.getPlans();
             for (DirectPlan plan : plans) {
                 if (SequencePlan.hasSequence(plan)){
                     return getPlanFromDirectPlan(plan);

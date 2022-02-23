@@ -40,4 +40,13 @@ public class Profiles {
         return builder.build();
 
     }
+
+    public static State getPurposeArticle(){
+        Resource stateId = RDFS.rdf.createBNode();
+        State.Builder builder = new State.Builder(stateId);
+        Resource statementId = RDFS.rdf.createBNode();
+        ReifiedStatement s = new ReifiedStatement(statementId, RDFS.rdf.createIRI(SignifierOntology.thisAgent), RDFS.rdf.createIRI(MazeOntology.isIn), RDFS.rdf.createIRI(MazeOntology.room9));
+        builder.addStatement(s);
+        return builder.build();
+    }
 }

@@ -50,7 +50,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
     public void build(OpFeedbackParam<Object> param){
         planBuilder.addSequence(sequence);
         SequencePlan plan = planBuilder.build();
-        affordanceBuilder.addPlan(plan);
+        //affordanceBuilder.addPlan(plan);
         Affordance affordance = affordanceBuilder.build();
         param.set(affordance);
     }
@@ -60,7 +60,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
     public void getAffordance(OpFeedbackParam<Object> param){
         planBuilder.addSequence(sequence);
         SequencePlan plan = planBuilder.build();
-        affordanceBuilder.addPlan(plan);
+        //affordanceBuilder.addPlan(plan);
         Affordance affordance = affordanceBuilder.build();
         param.set(affordance);
     }
@@ -69,7 +69,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
     public void getSignifier(OpFeedbackParam<Signifier> param){
         planBuilder.addSequence(sequence);
         SequencePlan plan = planBuilder.build();
-        affordanceBuilder.addPlan(plan);
+        //affordanceBuilder.addPlan(plan);
         Affordance affordance = affordanceBuilder.build();
         Resource signifierId = rdf.createBNode("exit");
         Signifier signifier = new Signifier.Builder(signifierId)
@@ -93,7 +93,7 @@ public class HypermediaExitBuilderArtifact extends Artifact {
                 .setPayload(payload)
                 .build();
         Affordance a = new Affordance.Builder(affordanceId)
-                .addPlan(movementPlan)
+                //.addPlan(movementPlan)
                 .build();
         return a;
     }
