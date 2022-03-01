@@ -132,7 +132,7 @@ public class HTTPArtifact extends Artifact {
         System.out.println("before send request");
         String body = "["+maxSignifiers+"]";
         System.out.println("body: "+ body);
-        sendRequestPayload(profileUrl+"/max", "POST", headers, toListString(str));
+        sendRequestPayload(profileUrl+"/max", "POST", headers, body);
         System.out.println("after send request");
 
     }

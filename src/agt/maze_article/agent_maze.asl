@@ -14,7 +14,6 @@ maze_url("http://localhost:8080/environments/env1/workspaces/wksp1/artifacts/maz
                            .print("purpose created");
                            writePurpose(ProfileUrl, Purpose)[artifact_id(HTTPArtifact)];
                            .print("purpose written");
-                           //writeMaxSignifiers(ProfileUrl, 1)[artifact_id(HTTPArtifact)];
                            .print("max signifiers written");
 
                            ?get_current_location(Maze,Room);
