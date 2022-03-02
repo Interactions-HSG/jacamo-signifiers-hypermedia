@@ -25,6 +25,23 @@ for (.range(I, 0, Size-1)){
     .concat(JasonList, [E], JasonList);
 }.
 
++?count(List, C): true <-
+.print(List);
+cartago.invoke_obj(List, size, C).
+
+/*+?count(List, C):
+cartago.invoke_obj("util.FeedbackUtil", count(List), C).*/
+
++!add_number_signifiers(List): true <-
+?signifiers_received(X);
+?count(List, C);
+.print("number of signifiers in list:");
+.print(C);
+-+signifiers_received(X+C);
+?signifiers_received(X2);
+.print(X2);
+.print("end add").
+
 { include("common_affordance.asl") }
 { include("common_artifacts.asl") }
 { include("common_beliefs.asl") }

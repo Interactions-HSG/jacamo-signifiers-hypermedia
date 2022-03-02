@@ -1,5 +1,7 @@
 maze_url("http://localhost:8080/environments/env1/workspaces/wksp1/artifacts/maze").
 
+signifiers_received(0).
+
 !start.
 
 +!start : maze_url(Url) <- .print("Start maze");
@@ -23,6 +25,7 @@ maze_url("http://localhost:8080/environments/env1/workspaces/wksp1/artifacts/maz
                                 ?retrieve_signifiers(Maze, List);
                                 .print("signifiers received");
                                 cartago.invoke_obj("util.FeedbackUtil", getListString(List), ListString);
+                                !add_number_signifiers(ListString);
                                 ?get0(ListString, SignifierUrl);
                                 ?retrieve_content(SignifierUrl, HTTPArtifact, SignifierContent);
                                 .print("content received");
@@ -37,6 +40,9 @@ maze_url("http://localhost:8080/environments/env1/workspaces/wksp1/artifacts/maz
                                 .print(NewRoom);
                                 -+current_location(NewRoom);
                            }
+                           ?signifiers_received(C);
+                           .print("number of signifiers received:");
+                           .print(C);
 
                            .print("end").
 
