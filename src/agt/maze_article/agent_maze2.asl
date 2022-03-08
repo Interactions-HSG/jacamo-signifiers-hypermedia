@@ -18,6 +18,7 @@ signifiers_received(0).
                            .print("purpose written");
                            writeMaxSignifiers(ProfileUrl, 1)[artifact_id(HTTPArtifact)];
                            .print("max signifiers written");
+                           registerProfile(ProfileUrl, Url)[artifact_id(HTTPArtifact)];
 
                            ?get_current_location(Maze,Room);
                            .print(Room);

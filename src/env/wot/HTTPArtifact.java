@@ -260,7 +260,7 @@ public class HTTPArtifact extends Artifact {
     @OPERATION
     public void registerProfile(String profileUri, String signifierArtifactUri){
         String uri = signifierArtifactUri+"/profile";
-        String payload = "["+profileUri+"]";
+        String payload = "[\""+profileUri+"\"]";
         Map<String, String> headers = getStandardHeaders(false);
         sendRequestPayload(uri, "POST", headers, payload);
     }

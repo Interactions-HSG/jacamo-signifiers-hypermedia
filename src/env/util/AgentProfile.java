@@ -24,25 +24,35 @@ public class AgentProfile {
     //private Model definition;
     //private Model comments;
 
+    private Optional<State> currentState;
+
+    private Optional <State> purpose;
+
+    private Optional<Integer> maxSignifiers;
+
     private Model model;
 
     public AgentProfile(Resource agent){
         this.agent = agent;
+        this.currentState = Optional.empty();
+        this.purpose = Optional.empty();
         //this.definition = new ModelBuilder().build();
         //this.comments = new ModelBuilder().build();
         this.model = new ModelBuilder().build();
-        model.add(this.agent, RDF.TYPE, RDFS.rdf.createLiteral(AgentProfileOntology.Agent));
+        model.add(this.agent, RDF.TYPE, RDFS.rdf.createIRI(AgentProfileOntology.Agent));
     }
 
-    public AgentProfile(Resource agent, Model definition,Model comments){
+    /*public AgentProfile(Resource agent, Model definition,Model comments){
         this.agent=agent;
+        this.currentState = Optional.empty();
+        this.purpose = Optional.empty();
         //this.definition=definition;
         //this.comments=comments;
         this.model = new ModelBuilder().build();
         model.add(this.agent, RDF.TYPE, RDFS.rdf.createLiteral(AgentProfileOntology.Agent));
         this.model.addAll(definition);
         this.model.addAll(comments);
-    }
+    }*/
 
     public AgentProfile(Resource agent, Model model){
         this.agent = agent;
@@ -77,6 +87,8 @@ public class AgentProfile {
     public Model getModel(){
         return model;
     }
+
+
 
     public Optional<State> getPurpose(){
         Optional<State> opPurpose = Optional.empty();
@@ -114,6 +126,15 @@ public class AgentProfile {
         this.model.add(statementId, RDF.SUBJECT, statement.getSubject());
         this.model.add(statementId, RDF.PREDICATE, statement.getPredicate());
         this.model.add(statementId, RDF.OBJECT, statement.getObject());
+    }
+
+    public void addStateToModel(Model m, IRI predicate, State s){
+        m.add(agent, predicate, s.getId());
+        m.addAll(s.getModel());
+    }
+
+    public void addMaxSignifiersToModel(Model m, int maxSignifiers){
+        m.add(agent, RDFS.rdf.createIRI(AgentProfileOntology.maxSignifiers), RDFS.rdf.createLiteral(maxSignifiers));
     }
 
     public void addState(IRI predicate, State s){
