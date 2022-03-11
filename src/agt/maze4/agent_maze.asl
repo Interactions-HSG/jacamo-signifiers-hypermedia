@@ -15,29 +15,37 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze4")
                            ?retrieve_signifiers(Maze, List);
                            .print("signifiers received");
                            cartago.invoke_obj("util.FeedbackUtil", getListString(List), ListString);
-                           ?get0(ListString, SignifierUrl1);
-                           ?retrieve_content(SignifierUrl1, HTTPArtifact, SignifierContent1);
-                           ?retrieve_signifier(SignifierContent1, S1);
-                           ?get1(ListString, SignifierUrl2);
-                           ?retrieve_content(SignifierUrl2, HTTPArtifact, SignifierContent2);
-                           ?retrieve_signifier(SignifierContent2, S2);
-                           cartago.new_obj("java.util.ArrayList",[], SignifierList);
-                           cartago.invoke_obj(SignifierList, add(S1));
-                           cartago.invoke_obj(SignifierList, add(S2));
+                           ?retrieve_signifiers_array(ListString, HTTPArtifact, SignifierArray);
+                           //?retrieve_all_signifiers(ListString, HTTPArtifact, SignifierList);
+                           ?find_sequence_plan_signifiers(SignifierArray, SignifierList);
+                           ?get0(SignifierList, S1);
+                           !print_object(S1);
+                           ?get1(SignifierList, S2);
+                           cartago.new_obj("java.util.ArrayList",[], AList);
+                           cartago.invoke_obj(AList, add(S1));
+                           cartago.invoke_obj(AList, add(S2));
+                           .print("before test");
                            ?isFirstSignifier(S1, B);
                            .print(B);
                            if (B){
-                                    ?get0(SignifierList, Signifier1);
-                                    ?get1(SignifierList, Signifier2);
+                                    ?get0(AList, Signifier1);
+                                    ?get1(AList, Signifier2);
                            }
                            else {
-                                    ?get0(SignifierList, Signifier2);
-                                    ?get1(SignifierList, Signifier1);
+                                    ?get0(AList, Signifier2);
+                                    ?get1(AList, Signifier1);
                            }
+                           .print("signifier1");
+                           !print_object(Signifier1);
+                           .print("signifier2");
+                           !print_object(Signifier2);
                            addSignifier("signifier2",Signifier2)[artifact_id(SignifierBase)];
                            ?get_first_affordance(Signifier1, A1);
                            ?get_first_plan(A1, P1);
-                           !use_sequence_plan(P1, HTTPArtifact);
+                           .print("print plan 1");
+                           !print_object(P1);
+                           .print("before use sequence plan");
+                           !use_sequence_plan(P1, HTTPArtifact, Maze);
                            ?get_current_location(Maze, Room);
                            .print(Room);
                            !second_part;
@@ -46,11 +54,15 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze4")
 
 
 +?isFirstSignifier(Signifier, B) : true <-
+!print_class(Signifier);
 cartago.invoke_obj(Signifier, getAffordanceList, AffordanceList);
+.print("affordance list defined");
 ?get0(AffordanceList, FirstAffordance);
-cartago.invoke_obj(FirstAffordance, getPrecondition, OpPrecondition);
-cartago.invoke_obj(OpPrecondition, get, Precondition);
+?get_precondition(FirstAffordance, Precondition);
 cartago.invoke_obj("maze.Util", hasPrecondition(Precondition,1), B).
+
+/*+?isFirstSignifier(Signifier, B) : true <-
+cartago.invoke_obj("maze.Util", isFirstSignifier(Signifier), B).*/
 
 
 
@@ -61,7 +73,8 @@ retrieveSignifier("signifier2", Signifier);
 .print("affordance retrieved");
 ?get_first_plan(A, P);
 .print("plan retrieved");
-!use_hypermedia_plan(P, HTTPArtifact);
+!print_object(P);
+!use_sequence_plan(P, HTTPArtifact, Maze);
 ?get_current_location(Maze, Room);
 .print(Room);
 .print("end second part").

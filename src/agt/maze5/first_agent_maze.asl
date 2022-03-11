@@ -1,4 +1,4 @@
-maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze").
+maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze5").
 
 !start.
 

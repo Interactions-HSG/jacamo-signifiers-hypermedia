@@ -5,3 +5,4 @@ cartago.invoke_obj("util.FeedbackUtil", getSignifierFromContent(SignifierContent
 cartago.invoke_obj(Signifier, toString, SignifierString);
 cartago.invoke_obj(Signifier, getAffordanceList, Affordances);
 cartago.invoke_obj(Affordances, get(0), Affordance).
+

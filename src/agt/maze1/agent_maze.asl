@@ -9,12 +9,12 @@ maze_url("http://localhost:8080/environments/61/workspaces/102/artifacts/maze1")
                   ?retrieve_signifiers(Maze, List);
                   .print("signifiers received");
                   cartago.invoke_obj("util.FeedbackUtil", getListString(List), ListString);
-                  ?get0(ListString, SignifierUrl);
-                  ?retrieve_content(SignifierUrl, HTTPArtifact, SignifierContent);
-                  ?retrieve_signifier(SignifierContent, Signifier);
-                  ?get_first_affordance(Signifier, Affordance);
-                  ?get_first_plan(Affordance, Plan);
-                  !use_sequence_plan(Plan, HTTPArtifact);
+                  ?retrieve_signifiers_array(ListString, HTTPArtifact, SignifierArray);
+                  .print("signifier list retrieved");
+                  ?find_sequence_plan(SignifierArray, Plan);
+                  //cartago.invoke_obj("maze.MazeUtil", getPlan1, Plan);
+                  !print_object(Plan);
+                  !use_sequence_plan(Plan, HTTPArtifact, Maze);
                   ?get_current_location(Maze,Room);
                   .print(Room);
                   .print("end").
