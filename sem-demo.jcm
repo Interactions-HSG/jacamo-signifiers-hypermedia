@@ -1,0 +1,3 @@
+mas semdemo {
+agent agent_blocks : blocks/agent_blocks.asl
+}
