@@ -3,10 +3,8 @@ package sem;
 import cartago.Artifact;
 import cartago.OPERATION;
 import cartago.OpFeedbackParam;
-import jason.asSyntax.Atom;
-import jason.asSyntax.ListTerm;
-import jason.asSyntax.ListTermImpl;
-import jason.asSyntax.StringTermImpl;
+import jason.asSyntax.*;
+import jason.asSyntax.Literal;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.io.entity.StringEntity;
@@ -32,7 +30,7 @@ import java.util.stream.Collectors;
 public class SEMArtifact extends Artifact {
 
     @OPERATION
-    public void readSignifier(OpFeedbackParam<ListTerm> signifierParam){
+    public void readSignifier1(OpFeedbackParam<ListTerm> signifierParam){
         try {
             URL url = new URL("http://localhost:5000/signifiers/?name=bdi_agent");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -43,13 +41,13 @@ public class SEMArtifact extends Artifact {
                 ListTerm l = new ListTermImpl();
                 Model m = parseTurtleString(response);
                 ValueFactory rdf = SimpleValueFactory.getInstance();
-                IRI signifierTypeIRI = rdf.createIRI("https://ci.mines-stetienne.fr/hmas/core#Signifier");
+                IRI signifierTypeIRI = rdf.createIRI("https://purl.org/hmas/Signifier");
                 Resource signifierId = null;
                 for (Statement s : m.getStatements(null, RDF.TYPE, signifierTypeIRI)) {
                     signifierId = s.getSubject();
                 }
                 Resource actionId = null;
-                for (Statement s2 : m.getStatements(signifierId, rdf.createIRI("https://ci.mines-stetienne.fr/hmas/interaction#signifies"), null)) {
+                for (Statement s2 : m.getStatements(signifierId, rdf.createIRI("https://purl.org/hmas/signifies"), null)) {
                     Value v = s2.getObject();
                     if (v.isResource()) {
                         actionId = (Resource) v;
@@ -77,6 +75,92 @@ public class SEMArtifact extends Artifact {
             e.printStackTrace();
         }
 
+    }
+
+    @OPERATION
+    public void readSignifier(OpFeedbackParam<ListTerm> signifierParam) throws Exception {
+        ListTerm lt = null;
+        List<Literal> signifiers = getSignifiers();
+        boolean b = true;
+        for (Literal s: signifiers){
+            if (s.getFunctor().equals("position") && b){ //TODO: check
+                System.out.println("signifier: "+s);
+                b = false;
+                List<Term> terms = s.getTerms();
+                lt = new ListTermImpl();
+                lt.addAll(terms);
+                this.defineObsProperty("position", terms);
+
+
+            }
+        }
+        if (lt==null){
+            throw new Exception();
+        }
+        signifierParam.set(lt);
+
+    }
+
+
+
+    public List<Literal> getSignifiers(){
+        List<Literal> signifiers = new ArrayList<>();
+        try {
+            URL url = new URL("http://localhost:5000/signifiers/?name=bdi_agent");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            int code = connection.getResponseCode();
+            if (code == 200) {
+                String response = readResponse(connection);
+                ListTerm l = new ListTermImpl();
+                Model m = parseTurtleString(response);
+                ValueFactory rdf = SimpleValueFactory.getInstance();
+                IRI signifierTypeIRI = rdf.createIRI("https://purl.org/hmas/Signifier");
+                List<Resource> signifierIds = new ArrayList<>();
+                for (Statement s : m.getStatements(null, RDF.TYPE, signifierTypeIRI)) {
+                    signifierIds.add(s.getSubject());
+                }
+                for (Resource signifierId: signifierIds) {
+                    Literal signifierLiteral = null;
+                    Resource actionId = null;
+                    for (Statement s2 : m.getStatements(signifierId, rdf.createIRI("https://purl.org/hmas/signifies"), null)) {
+                        Value v = s2.getObject();
+                        if (v.isResource()) {
+                            actionId = (Resource) v;
+                        }
+                    }
+                    for (Statement s4: m.getStatements(actionId, rdf.createIRI("http://example.org/hasPredicate"), null)){
+                        Value v = s4.getObject();
+                        if (v.isLiteral()){
+                            signifierLiteral = new LiteralImpl(v.stringValue());
+                        }
+                    }
+                    Resource listId = null;
+                    for (Statement s3 : m.getStatements(actionId, rdf.createIRI("http://example.org/hasParams"), null)) {
+                        Value v = s3.getObject();
+                        if (v.isResource()) {
+                            listId = (Resource) v;
+                        }
+                    }
+                    List<Value> lv = parseRDFList(m, listId);
+
+                    //List<String> li = getListFromId(m, listId);
+                    List<String> li = lv.stream().map(Object::toString).collect(Collectors.toList());
+                    for (String str : li) {
+                        String new_str = str.replace("\"", "");
+                        l.add(new StringTermImpl(new_str));
+                        assert signifierLiteral != null;
+                        signifierLiteral.addTerm(new StringTermImpl(new_str));
+                    }
+                    signifiers.add(signifierLiteral);
+                }
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println("all signifiers: "+signifiers);
+    return signifiers;
     }
 
     public List<String> getListFromId(Model m, Resource id){ //TODO: update
@@ -186,7 +270,7 @@ public class SEMArtifact extends Artifact {
     }
 
     @OPERATION
-    public void isFree(String a, OpFeedbackParam<String> b){
+    public void isFree1(String a, OpFeedbackParam<String> b){
         try {
             URL url = new URL("http://localhost:5000/env/free/?block=" + a);
             System.out.println(url.toString());
@@ -207,7 +291,36 @@ public class SEMArtifact extends Artifact {
     }
 
     @OPERATION
-    public void top(String a, OpFeedbackParam<String> b){
+    public void isFree(String a, OpFeedbackParam<String> b){
+        String bValue = "false";
+        List<Literal> signifiers = getSignifiers();
+        for (Literal signifier: signifiers){
+            System.out.println("signifier to check: "+ signifier);
+            String functor = signifier.getFunctor();
+            if (functor.equals("isFree")){
+                List<Term> terms = signifier.getTerms();
+                if (terms.size()>=2){
+                    Term blockTerm = terms.get(0);
+                    Term booleanTerm = terms.get(1);
+                    if (blockTerm.isString()){
+                        String block = ((StringTerm) blockTerm).getString();
+                        if (block.equals(a) && booleanTerm.isString()){
+                            String booleanString = ((StringTerm) booleanTerm).getString();
+                            if (booleanString.contains("true")){ //TODO: check
+                                bValue = "true";
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        b.set(bValue);
+
+    }
+
+    @OPERATION
+    public void top1(String a, OpFeedbackParam<String> b){
         //TODO: complete
         try {
             URL url = new URL("http://localhost:5000/env/top/?block=" + a);
@@ -220,5 +333,27 @@ public class SEMArtifact extends Artifact {
             e.printStackTrace();
             b.set("");
         }
+    }
+
+    @OPERATION
+    public void top(String a, OpFeedbackParam<String> b){
+        String top = "";
+        List<Literal> signifiers = getSignifiers();
+        for (Literal s: signifiers){
+            if (s.getFunctor().equals("hasTop")){
+                List<Term> terms = s.getTerms();
+                Term t1 = terms.get(0);
+                Term t2 = terms.get(1);
+                if (t1.isString() && t2.isString()){
+                    String b1 = ((StringTerm) t1).getString();
+                    String b2 = ((StringTerm) t1).getString();
+                    if (b1.equals(a)){
+                        top = b2;
+                    }
+                }
+            }
+        }
+        System.out.println("top: "+ top);
+        b.set(top);
     }
 }
